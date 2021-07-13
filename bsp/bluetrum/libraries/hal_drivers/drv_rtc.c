@@ -189,27 +189,27 @@ static rt_err_t ab32_rtc_control(rt_device_t dev, int cmd, void *args)
     switch (cmd)
     {
     case RT_DEVICE_CTRL_RTC_GET_TIME:
-        *(rt_uint32_t *)args = get_rtc_time_stamp();
-        LOG_D("RTC: get rtc_time %x", *(rt_uint32_t *)args);
+        *(time_t *)args = get_rtc_time_stamp();
+        LOG_D("RTC: get rtc_time %x", *(time_t *)args);
         break;
 
     case RT_DEVICE_CTRL_RTC_SET_TIME:
-        if (set_rtc_time_stamp(*(rt_uint32_t *)args))
+        if (set_rtc_time_stamp(*(time_t *)args))
         {
             result = -RT_ERROR;
         }
-        LOG_D("RTC: set rtc_time %x", *(rt_uint32_t *)args);
+        LOG_D("RTC: set rtc_time %x", *(time_t *)args);
         break;
     case RT_DEVICE_CTRL_RTC_SET_ALARM:
-        if (set_rtc_alarm_stamp(*(rt_uint32_t *)args))
+        if (set_rtc_alarm_stamp(*(time_t *)args))
         {
             result = -RT_ERROR;
         }
-        LOG_D("RTC: set alarm_stamp %x", *(rt_uint32_t *)args);
+        LOG_D("RTC: set alarm_stamp %x", *(time_t *)args);
         break;
     case RT_DEVICE_CTRL_RTC_GET_ALARM:
-        *(rt_uint32_t *)args = get_rtc_alarm_stamp();
-        LOG_D("RTC: get alarm_stamp %x", *(rt_uint32_t *)args);
+        *(time_t *)args = get_rtc_alarm_stamp();
+        LOG_D("RTC: get alarm_stamp %x", *(time_t *)args);
         break;
     }
 
@@ -253,6 +253,7 @@ static rt_err_t rt_hw_rtc_register(rt_device_t device, const char *name, rt_uint
 }
 
 #ifdef RT_USING_ALARM
+RT_SECTION(".irq.rtc")
 static void rtc_isr(int vector, void *param)
 {
     rt_interrupt_enter();

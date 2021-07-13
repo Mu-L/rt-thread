@@ -261,12 +261,12 @@ __exit:
     if (result > 0)
     {
         LOG_D("Set network interface device(%s) internet status up.", netdev->name);
-        netdev->flags |= NETDEV_FLAG_INTERNET_UP;
+        netdev_low_level_set_internet_status(netdev, RT_TRUE);
     }
     else
     {
         LOG_D("Set network interface device(%s) internet status down.", netdev->name);
-        netdev->flags &= ~NETDEV_FLAG_INTERNET_UP;
+        netdev_low_level_set_internet_status(netdev, RT_FALSE);
     }
 
     if (sockfd >= 0)
@@ -619,7 +619,9 @@ int sal_accept(int socket, struct sockaddr *addr, socklen_t *addrlen)
             LOG_E("New socket registered failed, return error %d.", retval);
             return -1;
         }
-
+		
+        /* new socket create by accept should have the same netdev with server*/
+        new_sock->netdev = sock->netdev;
         /* socket structure user_data used to store the acquired new socket */
         new_sock->user_data = (void *) new_socket;
 
